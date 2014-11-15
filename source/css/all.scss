@@ -4,5 +4,133 @@
 @import "imports";
 
 body {
-  margin-top: $marginTopBody;
+  font-family: Verdana, "游ゴシック", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+
+#wrapper {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+
+main {
+  float: right !important;
+  padding: 0 50px !important;
+}
+
+#nav-wrapper {
+  padding: 0;
+  height: 100%;
+  position: fixed;
+  left: 0;
+}
+
+nav {
+  padding: 40px;
+  height: 100%;
+  position: relative;
+
+  color: #fff;
+  background-color: #252525;
+  background-image: image-url('dark_geometric.png');
+}
+
+.profile {
+  text-align: left;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  &.bottom {
+    padding: 40px;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+  }
+
+  .avatar img {
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.298), inset 0px 0px 40px 2px rgba(0, 0, 0, 0.298);
+    max-height: 150px;
+    transition: opacity 0.3s cubic-bezier(0.42, 0, 0.58, 1) 0;
+  }
+
+  .name {
+    font-size: 32px;
+    font-weight: 600;
+    font-family: "Play", "Open Sans", "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Geneva", "Verdana", sans-serif;
+
+    a:link, a:visited, a:hover, a:active {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  .description {
+    font-size: 14px;
+    color: #999;
+  }
+
+  .social {
+    margin-top: 25px;
+
+    a:link, a:visited {
+      color: #999;
+    }
+
+    a:hover, a:active {
+      color: #fff;
+    }
+  }
+}
+
+article {
+  margin-bottom: 5em;
+
+  .tags {
+    a:link, a:visited, a:hover, a:active {
+      color: #fff;
+    }
+  }
+}
+
+footer {
+  margin: 25px 0;
+  text-align: center;
+}
+
+/* center and adjust the sidebar contents on smaller devices */
+@media (max-width: 1023px) {
+  #nav-wrapper {
+    position: static;
+    height: auto;
+    max-height: 450px;
+  }
+
+  nav {
+    .profile {
+      text-align: center;
+    }
+
+    .profile.bottom {
+      padding: 0;
+      position: static;
+    }
+
+    .avatar img {
+      display: none;
+      max-height: 100px;
+    }
+  }
+
+  main {
+    float: none !important;
+  }
 }

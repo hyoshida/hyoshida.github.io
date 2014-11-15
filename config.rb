@@ -2,7 +2,7 @@
 # Blog settings
 ###
 
-# Time.zone = "UTC"
+Time.zone = "Tokyo"
 
 activate :blog do |blog|
   # This will add a prefix to all links, template references and source paths
@@ -103,14 +103,13 @@ activate :livereload
 # Site Settings
 ###
 # Set site setting, used in helpers / sitemap.xml / feed.xml.
-set :site_url, 'http://blog.url.com'
-set :site_author, 'Blog author'
-set :site_title, 'Blog title'
-set :site_description, 'Blog description'
+set :site_url, 'http://hyoshida.github.io'
+set :site_author, 'サイバーよしだ'
+set :site_title, '@cyber_yoshida'
+set :site_description, '『コードは美しく奏でるように』目指せV系プログラマ！ Ruby, Rails, FreeBSD まわりの技術録を主とした個人ブログです。'
 # Select the theme from bootswatch.com.
 # If false, you can get plain bootstrap style.
-# set :theme_name, 'flatly'
-set :theme_name, false
+set :theme_name, 'flatly'
 # set @analytics_account, like "XX-12345678-9"
 @analytics_account = false
 

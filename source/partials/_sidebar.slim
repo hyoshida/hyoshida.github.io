@@ -1,22 +1,17 @@
-.col-lg-3.col-md-3
-  .well
-    h4 Tags
-    ul.list-unstyled
-      - blog.tags.each do |tag, articles|
-        li
-          = link_to tag, tag_path(tag)
-          |  (
-          = articles.size
-          | )
-  .well
-    h4 By year
-    ol
-      - blog.articles.group_by {|a| a.date.year }.each do |year, articles|
-        li
-          = link_to year, blog_year_path(year)
-          |  (
-          = articles.size
-          | )
-  .well
-    h4 Side Widget Well
-    p Bootstrap's default well for sidebar
+#nav-wrapper.col-lg-3.col-md-3
+  nav
+    section.profile.bottom
+      .avatar
+        = image_tag 'https://s.gravatar.com/avatar/33a17b7e2d802965f9a00d48c7a7f0a5?s=150'
+      h1.name
+        = link_to '@cyber_yoshida', '/'
+      .description
+        p = site_description
+      .social
+        ul.list-unstyled.list-inline
+          li
+            = link_to 'https://twitter.com/cyber_yoshida' do
+              i.fa.fa-twitter.fa-3x
+          li
+            = link_to 'https://github.com/hyoshida' do
+              i.fa.fa-github.fa-3x

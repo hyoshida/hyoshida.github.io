@@ -1,0 +1,32 @@
+- search_flag ||= false
+
+article
+  - if current_article == article
+    h1 = article.title
+  - elsif search_flag
+    h2 = link_to article.title, article
+  - else
+    h1 = link_to article.title, article
+
+  p.tags
+    - article.tags.each do |tag|
+      small.label.label-default
+        = link_to tag, tag_path(tag)
+  hr
+
+  p
+    span.glyphicon.glyphicon-time>
+    | Posted on #{article.date.strftime('%Y/%m/%d')}
+  hr
+
+  - if article.data.image_src
+    img.img-responsive src=article.data.image_src
+    hr
+
+  - if current_article == article
+    = article.body
+  - else
+    = article.summary
+    a.btn.btn-primary href=article.url
+      | Read More
+      span.glyphicon.glyphicon-chevron-right
