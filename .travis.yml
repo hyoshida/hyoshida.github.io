@@ -1,0 +1,24 @@
+language: ruby
+rvm: 2.1.5
+env:
+  global:
+    - GIT_COMMITTER_NAME=YOSHIDA Hiroki
+    - GIT_COMMITTER_EMAIL=hyoshida@appirits.com
+    - GIT_AUTHOR_NAME=YOSHIDA Hiroki
+    - GIT_AUTHOR_EMAIL=hyoshida@appirits.com
+    - secure: Nri/S5+ic/l6hpVBQxQJBBBYAg62akubLYC6z8Zgr+GRadtLQJLTdUze+wY7+dUlpe8OITSOJGju6unKgVCpZz1SRInPzwvSAEMXH+sfdxaf8qDPdhSuAgJ+ZGxBvasMfm6fa2Q6AuQSDFOOZIbHm9xYAD64cbN/Y4fyWb2hdjM=
+before_script:
+  - REV=`git rev-parse HEAD`
+  - git clone --quiet --quiet https://github.com/hyoshida/hyoshida.github.io.git build
+  - cd build
+  - git checkout gh-pages
+  - cd -
+  - npm install -g bower
+  - bower install
+script:
+  - bundle exec middleman build
+after_success:
+  - cd build
+  - git add -A
+  - git commit -m "Update for \"$REV\""
+  - '[ "$TRAVIS_BRANCH" == "master" ] && [ $GH_TOKEN ] && git push --quiet https://$GH_TOKEN@github.com/hyoshida/hyoshida.github.io.git gh-pages'
