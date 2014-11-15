@@ -10,6 +10,9 @@ gem "middleman-deploy", "~> 0.1.4"
 # Live-reloading plugin
 gem "middleman-livereload", "~> 3.1.0"
 
+# Syntax hilight
+gem "middleman-syntax"
+
 # For Slim
 gem "slim", "~> 2.0.2"
 

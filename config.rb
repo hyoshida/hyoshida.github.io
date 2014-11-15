@@ -99,6 +99,9 @@ activate :livereload
 #   end
 # end
 
+# Syntax hightlight
+activate :syntax, :line_numbers => true
+
 ###
 # Site Settings
 ###
