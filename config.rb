@@ -2,6 +2,7 @@
 # Blog settings
 ###
 
+require 'tzinfo'
 Time.zone = "Tokyo"
 
 activate :blog do |blog|

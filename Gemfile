@@ -24,3 +24,7 @@ gem "nokogiri", "~> 1.6.1"
 
 # For feed.xml.builder/sitemap.xml.builder
 gem "builder", "~> 3.0"
+
+# For FreeBSD?
+gem "tzinfo-data"
+gem "ffi", git: "git://github.com/ffi/ffi.git"

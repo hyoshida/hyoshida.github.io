@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/ffi/ffi.git
+  revision: 9dbe4dbe9fbaa2da26f085deb27f2b2d8e2583a8
+  specs:
+    ffi (1.9.6)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -21,7 +27,6 @@ GEM
     eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
-    ffi (1.9.3)
     fssm (0.2.10)
     haml (4.0.5)
       tilt
@@ -116,6 +121,8 @@ GEM
     tilt (1.4.1)
     tzinfo (1.1.0)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2014.10)
+      tzinfo (>= 1.0.0)
     uglifier (2.4.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -125,6 +132,7 @@ PLATFORMS
 
 DEPENDENCIES
   builder (~> 3.0)
+  ffi!
   middleman (~> 3.2.2)
   middleman-blog (~> 3.5.1)
   middleman-deploy (~> 0.1.4)
@@ -134,3 +142,4 @@ DEPENDENCIES
   nokogiri (~> 1.6.1)
   redcarpet (~> 3.1.1)
   slim (~> 2.0.2)
+  tzinfo-data
