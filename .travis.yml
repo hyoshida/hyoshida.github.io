@@ -11,7 +11,7 @@ before_script:
   - REV=`git rev-parse HEAD`
   - git clone --quiet --quiet https://github.com/hyoshida/hyoshida.github.io.git build
   - cd build
-  - git checkout gh-pages
+  - git checkout master
   - cd -
   - npm install -g bower
   - bower install
@@ -21,4 +21,4 @@ after_success:
   - cd build
   - git add -A
   - git commit -m "Update for \"$REV\""
-  - '[ "$TRAVIS_BRANCH" == "master" ] && [ $GH_TOKEN ] && git push --quiet https://$GH_TOKEN@github.com/hyoshida/hyoshida.github.io.git gh-pages'
+  - '[ "$TRAVIS_BRANCH" == "source" ] && [ $GH_TOKEN ] && git push --quiet https://$GH_TOKEN@github.com/hyoshida/hyoshida.github.io.git master'
