@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="IE=edge;chrome=1" http-equiv="X-UA-Compatible" />
+    <title>Rails4のマイグレーションの書き方まとめ | @cyber_yoshida</title>
+    <meta content="&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;&#x2F;h2&gt;
+
+&lt;p&gt;Ruby 2.2.0 が登場し、Rails 5 の噂も聞くようになった今日この頃ですが、ここで Rails 4 のマイグレーションの書き方についておさらいしておきたいと思います。
+Rails...&lt;&#x2F;p&gt;" name="description" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" /><!--[if lt IE 9]><script src="../../../js/ie8.js" type="text/javascript"></script><![endif]--><link href="../../../css/all.css" media="screen" rel="stylesheet" type="text/css" /><link href="../../../css/highlight.css" media="screen" rel="stylesheet" type="text/css" /><link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,600,700|Play" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="col-lg-3 col-md-3" id="nav-wrapper">
+        <nav>
+          <section class="profile bottom">
+            <div class="avatar">
+              <img src="https://s.gravatar.com/avatar/33a17b7e2d802965f9a00d48c7a7f0a5?s=150" />
+            </div>
+            <h1 class="name">
+              <a href="/">@cyber_yoshida</a>
+            </h1>
+            <div class="description">
+              <p>
+                『コードは美しく奏でるように』目指せV系プログラマ！ Ruby, Rails, FreeBSD まわりの技術録を主とした個人ブログです。
+              </p>
+            </div>
+            <div class="social">
+              <ul class="list-unstyled list-inline">
+                <li><a href="https://twitter.com/cyber_yoshida">
+                  <i class="fa fa-twitter fa-3x"></i></a>
+                </li>
+                <li><a href="https://github.com/hyoshida">
+                  <i class="fa fa-github fa-3x"></i></a>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </nav>
+      </div><main class="col-lg-9 col-md-9"><article>
+  <h1>
+    Rails4のマイグレーションの書き方まとめ
+  </h1>
+  <p class="tags">
+    <small class="label label-default"><a href="/tags/rails.html">rails</a></small>
+  </p>
+  <hr />
+  <p>
+    <span class="glyphicon glyphicon-time"></span> Posted on 2014/12/27
+  </p>
+  <hr /><h2 id="はじめに">はじめに</h2>
+
+<p>Ruby 2.2.0 が登場し、Rails 5 の噂も聞くようになった今日この頃ですが、ここで Rails 4 のマイグレーションの書き方についておさらいしておきたいと思います。
+Rails 4 系で新しくプロジェクトを作成しようとしている方は必見かもです。</p>
+
+<h2 id="マイグレーションとは？">マイグレーションとは？</h2>
+
+<p>この記事ではデータベースのスキーマ・マイグレーションを指します。</p>
+
+<p>そもそもデータベースのテーブル/カラムを定義するのになぜわざわざ「マイグレーション(移住/転住)」が必要なのか、という話についてはこちらの記事が詳しいのでご参照ください。</p>
+
+<blockquote>
+<p>マイグレーション機能とは</p>
+
+<p><a href="http://www.rubylife.jp/rails/model/index5.html" target="_blank"><a href="http://www.rubylife.jp/rails/model/index5.html">http://www.rubylife.jp/rails/model/index5.html</a></a></p>
+</blockquote>
+
+<h2 id="rails-2,-3-のマイグレーション">Rails 2, 3 のマイグレーション</h2>
+
+<p>ちょっと前のプロジェクトでは下記のようなマイグレーションファイルをよく見かけました。
+例えば新しくテーブルを作る場合はこんな具合です。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">up</span>
+    <span class="n">create_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">column</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+    <span class="k">end</span>
+    <span class="n">add_index</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:email</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">down</span>
+    <span class="n">remove_index</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:email</span>
+    <span class="n">drop_table</span> <span class="p">:</span><span class="n">admin_users</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>そしてそのテーブルに後からカラムやインデックスを追加するときにこのように書いていました。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">AddNameToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">up</span>
+    <span class="n">add_column</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+    <span class="n">add_index</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">down</span>
+    <span class="n">remove_index</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:name</span>
+    <span class="n">remove_column</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>この書き方は Rails 4 でも可能ではありますが、もう少し分かりやすい形式に書き直すことができます。</p>
+
+<h2 id="rails-4-のマイグレーション">Rails 4 のマイグレーション</h2>
+
+<p>先ほど紹介したマイグレーションファイルを、Rails 4 では下記のように書き直すことができます。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">column</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="ss">:email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>先ほどのマイグレーションファイルとの違いを見ていきましょう。
+<code>self.up</code> と <code>self.down</code> というメソッドがなくなり、代わりに <code>change</code> というメソッド１つになりました。
+また、インデックス作成のための <code>add_index</code> がなくなり、代わりに <code>create_table</code> のブロックの中に <code>t.index</code> というメソッドの呼び出しが増えています。
+先ほどのマイグレーションファイルと比べると、記述の量が減り、大分シンプルになっています。</p>
+
+<p>もちろんこの構文はロールバックにも対応しており、ロールバック時にはテーブルの削除を行ってくれます。</p>
+
+<p>次にカラム/インデックスを追加する場合の構文について紹介します。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">AddNameToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">change_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">column</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="ss">:name</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>新しく <code>change_table</code> というメソッドが登場しています。
+このメソッドを使うことで <code>create_table</code> とまったく同じ構文でカラムやインデックスの追加が可能になります。</p>
+
+<p>こちらもロールバック可能で、ロールバック時には <code>change_table</code> で追加したカラムやインデックスだけを消してくれます。</p>
+
+<h2 id="カラムに削除や変更が必要なときはどうするか">カラムに削除や変更が必要なときはどうするか</h2>
+
+<p>Rails 4 ではテーブルの作成やカラムの追加が、キレイにまとまった形で記述できることが分かりました。
+ではカラムを削除したり変更する場合はどのようにしたら良いでしょうか。</p>
+
+<p>カラムの属性変更は、テーブルの作成やカラムの追加と同じように <code>change_table</code> を使いながら次のように書くことができます。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">ChangeNameOnUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">reversible</span> <span class="k">do</span> <span class="o">|</span><span class="n">dir</span><span class="o">|</span>
+      <span class="n">change_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+        <span class="n">dir</span><span class="p">.</span><span class="nf">up</span>   <span class="p">{</span> <span class="n">t</span><span class="p">.</span><span class="nf">change</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span> <span class="p">}</span>
+        <span class="n">dir</span><span class="p">.</span><span class="nf">down</span> <span class="p">{</span> <span class="n">t</span><span class="p">.</span><span class="nf">change</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span> <span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p><code>reversible</code> メソッドを利用することで、<code>self.up</code> や <code>self.down</code> のようにマイグレーションの方向によって処理内容を変えることができます。
+これによって <code>change_table</code> を使いながらカラムの属性を変更したりロールバックしたりすることができるようになります。</p>
+
+<p>そしてカラムを削除するときにも、同じ構文が利用できます。
+その際には <code>t.remove</code> というメソッドを利用します。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">RemoveNameFromUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">reversible</span> <span class="k">do</span> <span class="o">|</span><span class="n">dir</span><span class="o">|</span>
+      <span class="n">change_table</span> <span class="p">:</span><span class="n">users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+        <span class="n">dir</span><span class="p">.</span><span class="nf">up</span>   <span class="p">{</span> <span class="n">t</span><span class="p">.</span><span class="nf">remove</span> <span class="ss">:name</span> <span class="p">}</span>
+        <span class="n">dir</span><span class="p">.</span><span class="nf">down</span> <span class="p">{</span> <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span> <span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>ただし、<code>reversible</code> を利用すると少し構文が複雑になってしまいます。
+これが嫌な場合は、カラムの削除を下記のように書くことも可能です。</p>
+<div class="highlight ruby"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">RemoveNameFromUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">remove_column</span> <span class="p">:</span><span class="n">users</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table>
+</div>
+
+<p>削除の構文なのにカラムの型やその他オプションを指定しているのが不思議に感じますが、これはロールバックの際に利用される情報になります。
+<code>reversible</code> メソッドを利用するよりは大分シンプルになりました。</p>
+
+<h2 id="さいごに">さいごに</h2>
+
+<p>Rails 4 のおさらいということでマイグレーションファイルの書き方についてまとめてみました。
+プロジェクトによってはDB設計が変わることはそうそうないことだとは思いますが、だからこそ忘れがちなので、覚え書きとして活用いただければと思います。</p>
+<div id="twitter">
+    <a class="twitter-share-button" data-related="cyber_yoshida" data-count="horizontal" href="https://twitter.com/share">Tweet</a>
+    <script type="text/javascript">
+      window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
+    </script>
+  </div>
+</article>
+        <aside>
+          <h3>
+            Recent Articles
+          </h3>
+          <ol>
+            <li>
+              <a href="/2014/12/27/writting-a-migration-in-rails-4.html">Rails4のマイグレーションの書き方まとめ</a> <span>2014/12/27</span> 
+            </li>
+            <li>
+              <a href="/2014/11/16/first-post.html">First Post</a> <span>2014/11/16</span> 
+            </li>
+            <li>
+              <a href="/2014/01/03/example-article.html">Example Article 3</a> <span>2014/01/03</span> 
+            </li>
+            <li>
+              <a href="/2014/01/02/example-article.html">Example Article 2</a> <span>2014/01/02</span> 
+            </li>
+            <li>
+              <a href="/2014/01/01/example-article.html">Example Article 1</a> <span>2014/01/01</span> 
+            </li>
+          </ol>
+        </aside>
+        <hr />
+        <footer>
+          <span>2014</span> <a href="/">@cyber_yoshida</a>
+        </footer>
+      </main>
+    </div>
+    <script src="../../../js/all.js" type="text/javascript"></script>
+  </body>
+</html>

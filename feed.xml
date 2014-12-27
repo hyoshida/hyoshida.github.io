@@ -5,16 +5,231 @@
   <id>http://hyoshida.github.io</id>
   <link href="http://hyoshida.github.io"/>
   <link href="http://hyoshida.github.io/feed.xml" rel="self"/>
-  <updated>2014-11-15T15:00:00Z</updated>
+  <updated>2014-12-26T15:00:00Z</updated>
   <author>
     <name>サイバーよしだ</name>
   </author>
+  <entry>
+    <title>Rails4のマイグレーションの書き方まとめ</title>
+    <link rel="alternate" href="http://hyoshida.github.io/2014/12/27/writting-a-migration-in-rails-4.html"/>
+    <id>http://hyoshida.github.io/2014/12/27/writting-a-migration-in-rails-4.html</id>
+    <published>2014-12-26T15:00:00Z</published>
+    <updated>2014-12-27T13:03:13+00:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;h2 id="はじめに"&gt;はじめに&lt;/h2&gt;
+
+&lt;p&gt;Ruby 2.2.0 が登場し、Rails 5 の噂も聞くようになった今日この頃ですが、ここで Rails 4 のマイグレーションの書き方についておさらいしておきたいと思います。
+Rails 4 系で新しくプロジェクトを作成しようとしている方は必見かもです。&lt;/p&gt;
+
+&lt;h2 id="マイグレーションとは？"&gt;マイグレーションとは？&lt;/h2&gt;
+
+&lt;p&gt;この記事ではデータベースのスキーマ・マイグレーションを指します。&lt;/p&gt;
+
+&lt;p&gt;そもそもデータベースのテーブル/カラムを定義するのになぜわざわざ「マイグレーション(移住/転住)」が必要なのか、という話についてはこちらの記事が詳しいのでご参照ください。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;マイグレーション機能とは&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.rubylife.jp/rails/model/index5.html" target="_blank"&gt;&lt;a href="http://www.rubylife.jp/rails/model/index5.html"&gt;http://www.rubylife.jp/rails/model/index5.html&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id="rails-2,-3-のマイグレーション"&gt;Rails 2, 3 のマイグレーション&lt;/h2&gt;
+
+&lt;p&gt;ちょっと前のプロジェクトでは下記のようなマイグレーションファイルをよく見かけました。
+例えば新しくテーブルを作る場合はこんな具合です。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CreateUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;up&lt;/span&gt;
+    &lt;span class="n"&gt;create_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;column&lt;/span&gt; &lt;span class="ss"&gt;:email&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="n"&gt;add_index&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:email&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;down&lt;/span&gt;
+    &lt;span class="n"&gt;remove_index&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:email&lt;/span&gt;
+    &lt;span class="n"&gt;drop_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;admin_users&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;そしてそのテーブルに後からカラムやインデックスを追加するときにこのように書いていました。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AddNameToUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;up&lt;/span&gt;
+    &lt;span class="n"&gt;add_column&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+    &lt;span class="n"&gt;add_index&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nc"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;down&lt;/span&gt;
+    &lt;span class="n"&gt;remove_index&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;
+    &lt;span class="n"&gt;remove_column&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;この書き方は Rails 4 でも可能ではありますが、もう少し分かりやすい形式に書き直すことができます。&lt;/p&gt;
+
+&lt;h2 id="rails-4-のマイグレーション"&gt;Rails 4 のマイグレーション&lt;/h2&gt;
+
+&lt;p&gt;先ほど紹介したマイグレーションファイルを、Rails 4 では下記のように書き直すことができます。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CreateUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;change&lt;/span&gt;
+    &lt;span class="n"&gt;create_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;column&lt;/span&gt; &lt;span class="ss"&gt;:email&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+      &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;index&lt;/span&gt; &lt;span class="ss"&gt;:email&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;先ほどのマイグレーションファイルとの違いを見ていきましょう。
+&lt;code&gt;self.up&lt;/code&gt; と &lt;code&gt;self.down&lt;/code&gt; というメソッドがなくなり、代わりに &lt;code&gt;change&lt;/code&gt; というメソッド１つになりました。
+また、インデックス作成のための &lt;code&gt;add_index&lt;/code&gt; がなくなり、代わりに &lt;code&gt;create_table&lt;/code&gt; のブロックの中に &lt;code&gt;t.index&lt;/code&gt; というメソッドの呼び出しが増えています。
+先ほどのマイグレーションファイルと比べると、記述の量が減り、大分シンプルになっています。&lt;/p&gt;
+
+&lt;p&gt;もちろんこの構文はロールバックにも対応しており、ロールバック時にはテーブルの削除を行ってくれます。&lt;/p&gt;
+
+&lt;p&gt;次にカラム/インデックスを追加する場合の構文について紹介します。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AddNameToUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;change&lt;/span&gt;
+    &lt;span class="n"&gt;change_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;column&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+      &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;index&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;新しく &lt;code&gt;change_table&lt;/code&gt; というメソッドが登場しています。
+このメソッドを使うことで &lt;code&gt;create_table&lt;/code&gt; とまったく同じ構文でカラムやインデックスの追加が可能になります。&lt;/p&gt;
+
+&lt;p&gt;こちらもロールバック可能で、ロールバック時には &lt;code&gt;change_table&lt;/code&gt; で追加したカラムやインデックスだけを消してくれます。&lt;/p&gt;
+
+&lt;h2 id="カラムに削除や変更が必要なときはどうするか"&gt;カラムに削除や変更が必要なときはどうするか&lt;/h2&gt;
+
+&lt;p&gt;Rails 4 ではテーブルの作成やカラムの追加が、キレイにまとまった形で記述できることが分かりました。
+ではカラムを削除したり変更する場合はどのようにしたら良いでしょうか。&lt;/p&gt;
+
+&lt;p&gt;カラムの属性変更は、テーブルの作成やカラムの追加と同じように &lt;code&gt;change_table&lt;/code&gt; を使いながら次のように書くことができます。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ChangeNameOnUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;change&lt;/span&gt;
+    &lt;span class="n"&gt;reversible&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;change_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;up&lt;/span&gt;   &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;change&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;down&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;change&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;reversible&lt;/code&gt; メソッドを利用することで、&lt;code&gt;self.up&lt;/code&gt; や &lt;code&gt;self.down&lt;/code&gt; のようにマイグレーションの方向によって処理内容を変えることができます。
+これによって &lt;code&gt;change_table&lt;/code&gt; を使いながらカラムの属性を変更したりロールバックしたりすることができるようになります。&lt;/p&gt;
+
+&lt;p&gt;そしてカラムを削除するときにも、同じ構文が利用できます。
+その際には &lt;code&gt;t.remove&lt;/code&gt; というメソッドを利用します。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RemoveNameFromUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;change&lt;/span&gt;
+    &lt;span class="n"&gt;reversible&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+      &lt;span class="n"&gt;change_table&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+        &lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;up&lt;/span&gt;   &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;remove&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;down&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;string&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;ただし、&lt;code&gt;reversible&lt;/code&gt; を利用すると少し構文が複雑になってしまいます。
+これが嫌な場合は、カラムの削除を下記のように書くことも可能です。&lt;/p&gt;
+&lt;div class="highlight ruby"&gt;&lt;table style="border-spacing: 0"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="gutter gl" style="text-align: right"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5&lt;/pre&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RemoveNameFromUsers&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Migration&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;change&lt;/span&gt;
+    &lt;span class="n"&gt;remove_column&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;null: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;削除の構文なのにカラムの型やその他オプションを指定しているのが不思議に感じますが、これはロールバックの際に利用される情報になります。
+&lt;code&gt;reversible&lt;/code&gt; メソッドを利用するよりは大分シンプルになりました。&lt;/p&gt;
+
+&lt;h2 id="さいごに"&gt;さいごに&lt;/h2&gt;
+
+&lt;p&gt;Rails 4 のおさらいということでマイグレーションファイルの書き方についてまとめてみました。
+プロジェクトによってはDB設計が変わることはそうそうないことだとは思いますが、だからこそ忘れがちなので、覚え書きとして活用いただければと思います。&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>First Post</title>
     <link rel="alternate" href="http://hyoshida.github.io/2014/11/16/first-post.html"/>
     <id>http://hyoshida.github.io/2014/11/16/first-post.html</id>
     <published>2014-11-15T15:00:00Z</published>
-    <updated>2014-11-15T17:47:48+00:00</updated>
+    <updated>2014-12-27T13:03:13+00:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -45,7 +260,7 @@
     <link rel="alternate" href="http://hyoshida.github.io/2014/01/03/example-article.html"/>
     <id>http://hyoshida.github.io/2014/01/03/example-article.html</id>
     <published>2014-01-02T15:00:00Z</published>
-    <updated>2014-11-15T17:47:48+00:00</updated>
+    <updated>2014-12-27T13:03:13+00:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -57,7 +272,7 @@
     <link rel="alternate" href="http://hyoshida.github.io/2014/01/02/example-article.html"/>
     <id>http://hyoshida.github.io/2014/01/02/example-article.html</id>
     <published>2014-01-01T15:00:00Z</published>
-    <updated>2014-11-15T17:47:48+00:00</updated>
+    <updated>2014-12-27T13:03:13+00:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -69,7 +284,7 @@
     <link rel="alternate" href="http://hyoshida.github.io/2014/01/01/example-article.html"/>
     <id>http://hyoshida.github.io/2014/01/01/example-article.html</id>
     <published>2013-12-31T15:00:00Z</published>
-    <updated>2014-11-15T17:47:48+00:00</updated>
+    <updated>2014-12-27T13:03:13+00:00</updated>
     <author>
       <name>Article Author</name>
     </author>
