@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://hyoshida.github.io/2014/01/02/example-article.html</loc>
-    <lastmod>2014-12-27</lastmod>
-    <priority>0.7</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
     <loc>http://hyoshida.github.io/2014/12/27/writting-a-migration-in-rails-4.html</loc>
-    <lastmod>2014-12-27</lastmod>
-    <priority>0.7</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>http://hyoshida.github.io/2014/01/03/example-article.html</loc>
-    <lastmod>2014-12-27</lastmod>
-    <priority>0.7</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>http://hyoshida.github.io/2014/01/01/example-article.html</loc>
     <lastmod>2014-12-27</lastmod>
     <priority>0.7</priority>
     <changefreq>daily</changefreq>
@@ -31,21 +13,27 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
+    <loc>http://hyoshida.github.io/2014/01/03/example-article.html</loc>
+    <lastmod>2014-12-27</lastmod>
+    <priority>0.7</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>http://hyoshida.github.io/2014/01/02/example-article.html</loc>
+    <lastmod>2014-12-27</lastmod>
+    <priority>0.7</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>http://hyoshida.github.io/2014/01/01/example-article.html</loc>
+    <lastmod>2014-12-27</lastmod>
+    <priority>0.7</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
     <loc>http://hyoshida.github.io/</loc>
     <lastmod>2014-12-27</lastmod>
     <priority>1.0</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>http://hyoshida.github.io/tags/example.html</loc>
-    <lastmod>2014-12-27</lastmod>
-    <priority>0.9</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>http://hyoshida.github.io/tags/even.html</loc>
-    <lastmod>2014-12-27</lastmod>
-    <priority>0.9</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
@@ -55,7 +43,19 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
+    <loc>http://hyoshida.github.io/tags/example.html</loc>
+    <lastmod>2014-12-27</lastmod>
+    <priority>0.9</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
     <loc>http://hyoshida.github.io/tags/odd.html</loc>
+    <lastmod>2014-12-27</lastmod>
+    <priority>0.9</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>http://hyoshida.github.io/tags/even.html</loc>
     <lastmod>2014-12-27</lastmod>
     <priority>0.9</priority>
     <changefreq>daily</changefreq>
