@@ -140,5 +140,10 @@ footer {
 
   main {
     float: none !important;
+    padding: 0 10px !important;
+  }
+
+  blockquote {
+    overflow-x: auto;
   }
 }
