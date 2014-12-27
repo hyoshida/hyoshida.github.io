@@ -18,7 +18,7 @@ Rails 4 系で新しくプロジェクトを作成しようとしている方は
 >
 > マイグレーション機能とは
 >
-> <a href="http://www.rubylife.jp/rails/model/index5.html" target="_blank">http://www.rubylife.jp/rails/model/index5.html</a>
+> http://www.rubylife.jp/rails/model/index5.html
 >
 
 
