@@ -25,6 +25,7 @@ article
 
   - if current_article == article
     = article.body
+    = partial 'partials/twitter'
   - else
     = article.summary
     a.btn.btn-primary href=article.url
