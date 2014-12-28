@@ -24,6 +24,10 @@ blockquote p {
 main {
   float: right !important;
   padding: 0 50px !important;
+
+  article {
+    max-width: 840px;
+  }
 }
 
 #nav-wrapper {
