@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://hyoshida.github.io/</loc>
+    <loc>http://hyoshida.github.io/2014/12/27/writting-a-migration-in-rails-4.html</loc>
     <lastmod>2014-12-29</lastmod>
-    <priority>1.0</priority>
+    <priority>0.7</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>http://hyoshida.github.io/2014/12/27/writting-a-migration-in-rails-4.html</loc>
+    <loc>http://hyoshida.github.io/2014/11/16/first-post.html</loc>
     <lastmod>2014-12-29</lastmod>
     <priority>0.7</priority>
     <changefreq>daily</changefreq>
@@ -25,15 +25,15 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>http://hyoshida.github.io/2014/11/16/first-post.html</loc>
+    <loc>http://hyoshida.github.io/2014/01/01/example-article.html</loc>
     <lastmod>2014-12-29</lastmod>
     <priority>0.7</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>http://hyoshida.github.io/2014/01/01/example-article.html</loc>
+    <loc>http://hyoshida.github.io/</loc>
     <lastmod>2014-12-29</lastmod>
-    <priority>0.7</priority>
+    <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
