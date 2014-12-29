@@ -115,7 +115,7 @@ set :site_description, '『コードは美しく奏でるように』目指せV�
 # If false, you can get plain bootstrap style.
 set :theme_name, 'flatly'
 # set @analytics_account, like "XX-12345678-9"
-@analytics_account = false
+@analytics_account = 'UA-45521973-2'
 
 # Asset Settings
 set :css_dir, 'css'
